@@ -225,10 +225,18 @@ const content = () => {
     editSetText("");
   };
 
+  const toggleCompleteTodoHandle = (index) => {
+    setTodos(
+      todos.map((todo, i) =>
+        i === index ? { ...todo, isCompleted: !todo.isCompleted } : todo
+      )
+    );
+  };
+
   return (
     <div>
       <div>
-        <h1>ToDo___List</h1>
+        <h1>ToDo List</h1>
         <div>
           <input
             type="text"
@@ -242,34 +250,48 @@ const content = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          <button onClick={addTodoHandle}>add</button>
+          <button onClick={addTodoHandle}>Add</button>
         </div>
       </div>
+
       <div>
-        {todos.map((todo, i) =>
-          todo.status == "complete" ? (
-            <div key={i}>
-              <h1>{todo.title}</h1>
-              <h1>{todo.text}</h1>
-              <button onClick={() => editTodoHandle(i)}>edit</button>
-              <button onClick={() => removeTodoHandle(i)}>remove</button>
-            </div>
-          ) : (
-            <div key={i}>
-              <input
-                type="text"
-                value={edittitle}
-                onChange={(e) => editSetTitle(e.target.value)}
-              />
-              <input
-                type="text"
-                value={edittext}
-                onChange={(e) => editSetText(e.target.value)}
-              />
-              <button onClick={() => saveTodoHandle(i)}>save</button>
-            </div>
-          )
-        )}
+        <h2>Tasks</h2>
+        {todos.map((todo, i) => (
+          <div
+            key={i}
+            style={{
+              textDecoration: todo.isCompleted ? "line-through" : "none",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={todo.isCompleted}
+              onChange={() => toggleCompleteTodoHandle(i)}
+            />
+            {todo.status === "complete" ? (
+              <>
+                <h3>{todo.title}</h3>
+                <p>{todo.text}</p>
+                <button onClick={() => editTodoHandle(i)}>Edit</button>
+                <button onClick={() => removeTodoHandle(i)}>Remove</button>
+              </>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  value={edittitle}
+                  onChange={(e) => editSetTitle(e.target.value)}
+                />
+                <input
+                  type="text"
+                  value={edittext}
+                  onChange={(e) => editSetText(e.target.value)}
+                />
+                <button onClick={() => saveTodoHandle(i)}>Save</button>
+              </>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
