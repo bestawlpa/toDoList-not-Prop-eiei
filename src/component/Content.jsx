@@ -180,29 +180,25 @@
 
 import React, { useState } from "react";
 
-const content = () => {
+const Content = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [edittitle, editSetTitle] = useState("");
-  const [edittext, editSetText] = useState("");
+  const [editTitle, editSetTitle] = useState("");
+  const [editText, editSetText] = useState("");
+  const [click, setClick] = useState(null);
 
-  const addTodoHandle = () => {
-    // if (title.trim() == "" || text.trim() == "") {
-    //   alert("มึงลืมใส่อะไร ?");
-    //   return;
-    // }
-
+  const handleAddTodo = () => {
     setTodos([...todos, { title, text, status: "complete" }]);
     setTitle("");
     setText("");
   };
 
-  const removeTodoHandle = (index) => {
-    setTodos(todos.filter((todo, i) => i !== index));
+  const handleRemove = (index) => {
+    setTodos(todos.filter((e, i) => i !== index));
   };
 
-  const editTodoHandle = (index) => {
+  const handleEdit = (index) => {
     const todo = todos[index];
 
     if (todo) {
@@ -213,88 +209,84 @@ const content = () => {
     }
   };
 
-  const saveTodoHandle = (index) => {
+  const handleSave = (index) => {
     setTodos(
       todos.map((todo, i) =>
-        i === index
-          ? { ...todo, title: edittitle, text: edittext, status: "complete" }
-          : todo
+        index == i
+          ? { title: editTitle, text: editText, status: "complete" }
+          : todos
       )
     );
-    editSetTitle("");
-    editSetText("");
   };
 
-  const toggleCompleteTodoHandle = (index) => {
-    setTodos(
-      todos.map((todo, i) =>
-        i === index ? { ...todo, isCompleted: !todo.isCompleted } : todo
-      )
-    );
+  const handleClick = (index) => {
+    setClick(click === index ? null : index);
   };
 
   return (
     <div>
       <div>
-        <h1>ToDo List</h1>
-        <div>
-          <input
-            type="text"
-            placeholder="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button onClick={addTodoHandle}>Add</button>
-        </div>
+        <h1>ToDoList</h1>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button type="submit" onClick={handleAddTodo}>
+          add
+        </button>
       </div>
 
       <div>
-        <h2>Tasks</h2>
-        {todos.map((todo, i) => (
-          <div
-            key={i}
-            style={{
-              textDecoration: todo.isCompleted ? "line-through" : "none",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={todo.isCompleted}
-              onChange={() => toggleCompleteTodoHandle(i)}
-            />
-            {todo.status === "complete" ? (
-              <>
-                <h3>{todo.title}</h3>
-                <p>{todo.text}</p>
-                <button onClick={() => editTodoHandle(i)}>Edit</button>
-                <button onClick={() => removeTodoHandle(i)}>Remove</button>
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  value={edittitle}
-                  onChange={(e) => editSetTitle(e.target.value)}
-                />
-                <input
-                  type="text"
-                  value={edittext}
-                  onChange={(e) => editSetText(e.target.value)}
-                />
-                <button onClick={() => saveTodoHandle(i)}>Save</button>
-              </>
-            )}
-          </div>
-        ))}
+        {todos.map((todo, index) =>
+          todo.status == "complete" ? (
+            <div key={index}>
+              <button onClick={() => handleClick(index)}>click</button>
+              <h2
+                style={{
+                  textDecoration: click === index ? "line-through" : "none", // เปลี่ยนสีตามสถานะการคลิก
+                }}
+              >
+                {todo.title}
+              </h2>
+              <h2
+                style={{
+                  textDecoration: click === index ? "line-through" : "none", // เปลี่ยนสีตามสถานะการคลิก
+                }}
+              >
+                {todo.text}
+              </h2>
+              <button onClick={() => handleEdit(index)}>edit</button>
+              <button onClick={() => handleRemove(index)}>remove</button>
+            </div>
+          ) : (
+            <div key={index}>
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => editSetTitle(e.target.value)}
+              />
+              <input
+                type="text"
+                value={editText}
+                onChange={(e) => editSetText(e.target.value)}
+              />
+              <button onClick={() => handleSave(index)}>save</button>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
 };
 
-export default content;
+export default Content;
