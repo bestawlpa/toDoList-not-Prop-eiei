@@ -1,290 +1,125 @@
-// -- (1)
-
-// import { useState } from "react";
-
-// const Content = () => {
-//   const [todos, setTodos] = useState([]);
-//   const [text, setText] = useState("");
-//   const [editText, setEditText] = useState("");
-
-//   const handleClickAddTodo = () => {
-//     if (text.trim() === "") {
-//       alert("Please enter a todo item.");
-//       return;
-//     }
-//     const newTodo = {
-//       id: Date.now(),
-//       text: text,
-//       status: "complete",
-//     };
-//     setTodos([...todos, newTodo]);
-//     setText("");
-//   };
-
-//   const editTodo = (id) => {
-//     const todo = todos.find((todo) => todo.id === id);
-
-//     if (todo) {
-//       todo.status = "edit";
-//       setEditText(todo.text);
-//       setTodos([...todos]);
-//     }
-//   };
-
-//   const saveTodo = (id) => {
-//     setTodos(
-//       todos.map((todo) =>
-//         todo.id === id ? { ...todo, text: editText, status: "complete" } : todo
-//       )
-//     );
-//     setEditText("");
-//   };
-
-//   const remove = async (id) => {
-//     setTodos(todos.filter((todo) => todo.id !== id));
-//   };
-
-//   return (
-//     <div className=" w-[800px] h-[600px] bg-red-400">
-//       <div>
-//         <div>
-//           <input
-//             type="text"
-//             placeholder="text"
-//             value={text}
-//             onChange={(e) => setText(e.target.value)}
-//           />
-//         </div>
-//         <button onClick={handleClickAddTodo}>add</button>
-//       </div>
-//       <div className=" w-[500px] h-[400px] flex flex-col bg-gray-500">
-//         {todos.map((todo) =>
-//           todo.status === "complete" ? (
-//             <div key={todo.id}>
-//               <h1>{todo.text}</h1>
-//               <h1>{todo.id}</h1>
-//               <button
-//                 onClick={() => editTodo(todo.id)}
-//                 id="btn-edit"
-//                 className="focus:bg-[#0766AD]  bg-[#9B4444]  w-10 h-6 rounded-full flex justify-center items-center text-[#F2F1EB] focus:text-[#C5E898]"
-//               >
-//                 edit
-//               </button>
-//               <button
-//                 onClick={() => remove(todo.id)}
-//                 id="btn-edit"
-//                 className="focus:bg-[#0766AD]  bg-[#9B4444]  w-10 h-6 rounded-full flex justify-center items-center text-[#F2F1EB] focus:text-[#C5E898]"
-//               >
-//                 remove
-//               </button>
-//             </div>
-//           ) : (
-//             <div key={todo.id}>
-//               <input
-//                 type="text"
-//                 value={editText}
-//                 onChange={(e) => setEditText(e.target.value)}
-//               />
-//               <button onClick={() => saveTodo(todo.id)}>Save</button>
-//             </div>
-//           )
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Content;
-
-// -- (2)
-// import React, { useState } from "react";
-
-// const content = () => {
-//   const [todos, setTodos] = useState([]);
-//   const [text, setText] = useState("");
-//   const [editText, EditSetText] = useState("");
-
-//   const addTodoHandle = () => {
-//     if (text.trim() === "") {
-//       alert("พิมพ์อะไรสักหน่อยไหม ?");
-//       return;
-//     }
-
-//     setTodos([...todos, { text, status: "complete" }]);
-//     setText("");
-//   };
-
-//   const editHandle = (index) => {
-//     const todo = todos[index];
-
-//     if (todo) {
-//       todo.status = "edit";
-//       EditSetText(todo.text);
-//       setTodos([...todos]);
-//     }
-//   };
-
-//   const saveHandle = (index) => {
-//     setTodos(
-//       todos.map((todo, i) =>
-//         i === index ? { ...todo, text: editText, status: "complete" } : todo
-//       )
-//     );
-//     EditSetText("");
-//   };
-
-//   const removeHandle = (index) => {
-//     setTodos(todos.filter((todo, i) => i !== index));
-//   };
-
-//   return (
-//     <div>
-//       <div>
-//         <h1>ToDo____List</h1>
-//         <div>
-//           <input
-//             type="text"
-//             value={text}
-//             placeholder="add"
-//             onChange={(e) => setText(e.target.value)}
-//           />
-//           <button onClick={addTodoHandle}>add si wa</button>
-//         </div>
-//       </div>
-
-//       <div className=" bg-yellow-200">
-//         {todos.map((todo, i) =>
-//           todo.status === "complete" ? (
-//             <div key={i}>
-//               <h1>{todo.text}</h1>
-//               <button onClick={() => editHandle(i)}>edit</button>
-//               <button onClick={() => removeHandle(i)}>remove</button>
-//             </div>
-//           ) : (
-//             <div key={i}>
-//               <input
-//                 type="text"
-//                 value={editText}
-//                 onChange={(e) => EditSetText(e.target.value)}
-//               />
-//               <button onClick={() => saveHandle(i)}>save</button>
-//             </div>
-//           )
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default content;
-
 import React, { useState } from "react";
 
 const Content = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [editTitle, editSetTitle] = useState("");
-  const [editText, editSetText] = useState("");
-  const [click, setClick] = useState(null);
+
+  const [clickComplete, setClickComplete] = useState(null);
 
   const handleAddTodo = () => {
-    setTodos([...todos, { title, text, status: "complete" }]);
+    setTodos([
+      ...todos,
+      { id: Date.now(), title, text, status: "complete", isEditing: false },
+    ]);
     setTitle("");
     setText("");
   };
 
-  const handleRemove = (index) => {
-    setTodos(todos.filter((e, i) => i !== index));
+  const handleRemove = (id) => {
+    setTodos(todos.filter((e) => e.id !== id));
   };
 
-  const handleEdit = (index) => {
-    const todo = todos[index];
-
-    if (todo) {
-      todo.status = "edit";
-      editSetTitle(todo.title);
-      editSetText(todo.text);
-      setTodos([...todos]);
-    }
+  const handleEdit = (id) => {
+    setTodos(todos.map((e) => (e.id === id ? { ...e, isEditing: true } : e)));
   };
 
-  const handleSave = (index) => {
+  const handleSave = (id, newTitle, newText) => {
     setTodos(
-      todos.map((todo, i) =>
-        index == i
-          ? { title: editTitle, text: editText, status: "complete" }
-          : todos
+      todos.map((e) =>
+        e.id === id
+          ? {
+              ...e,
+              title: newTitle,
+              text: newText,
+              status: "complete",
+              isEditing: false,
+            }
+          : e
       )
     );
   };
-
-  const handleClick = (index) => {
-    setClick(click === index ? null : index);
-  };
-
   return (
     <div>
-      <div>
-        <h1>ToDoList</h1>
-      </div>
-      <div>
-        <input
-          type="text"
-          placeholder="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button type="submit" onClick={handleAddTodo}>
-          add
-        </button>
-      </div>
+      <div id="form-add">
+        <h1>ToDo...List</h1>
+        <div>
+          <input
+            type="text"
+            placeholder="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+          <button onClick={handleAddTodo}>add</button>
+        </div>
 
-      <div>
-        {todos.map((todo, index) =>
-          todo.status == "complete" ? (
-            <div key={index}>
-              <button onClick={() => handleClick(index)}>click</button>
-              <h2
-                style={{
-                  textDecoration: click === index ? "line-through" : "none", // เปลี่ยนสีตามสถานะการคลิก
-                }}
-              >
-                {todo.title}
-              </h2>
-              <h2
-                style={{
-                  textDecoration: click === index ? "line-through" : "none", // เปลี่ยนสีตามสถานะการคลิก
-                }}
-              >
-                {todo.text}
-              </h2>
-              <button onClick={() => handleEdit(index)}>edit</button>
-              <button onClick={() => handleRemove(index)}>remove</button>
-            </div>
-          ) : (
-            <div key={index}>
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => editSetTitle(e.target.value)}
-              />
-              <input
-                type="text"
-                value={editText}
-                onChange={(e) => editSetText(e.target.value)}
-              />
-              <button onClick={() => handleSave(index)}>save</button>
-            </div>
-          )
-        )}
+        <div id="form-list">
+          <h1>List</h1>
+          <div>
+            {todos.map((e) =>
+              e.isEditing ? (
+                <div>
+                  <h1>Edit</h1>
+                  <div key={e.id}>
+                    <input
+                      type="text"
+                      value={e.title}
+                      onChange={(even) =>
+                        setTodos(
+                          todos.map((todo) =>
+                            todo.id == e.id
+                              ? {
+                                  ...todo,
+                                  title: even.target.value,
+                                }
+                              : todo
+                          )
+                        )
+                      }
+                    />
+                    <input
+                      type="text"
+                      value={e.text}
+                      onChange={(even) =>
+                        setTodos(
+                          todos.map((todo) =>
+                            todo.id == e.id
+                              ? {
+                                  ...todo,
+                                  text: even.target.value,
+                                }
+                              : todo
+                          )
+                        )
+                      }
+                    />
+                    <button onClick={() => handleSave(e.id, e.title, e.text)}>
+                      save
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div key={e.id}>
+                  <button>complete</button>
+                  <h2>{e.title}</h2>
+                  <h5>{e.text}</h5>
+                  <div>
+                    <button onClick={() => handleEdit(e.id)}>edit</button>
+                    <button onClick={() => handleRemove(e.id)}>remove</button>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </div>
       </div>
+      <div></div>
     </div>
   );
 };
